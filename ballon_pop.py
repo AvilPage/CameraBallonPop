@@ -8,6 +8,10 @@ import numpy as np  # control matrices
 import random
 from cvzone.HandTrackingModule import HandDetector
 
+# settings
+FONT_LEFT_MARGIN = 10
+FONT_COLOR = (255, 50, 50)
+
 # initialize
 pygame.init()
 
@@ -42,7 +46,7 @@ rectBallon.x, rectBallon.y = 500, 300  # here we are declaring postion of ballon
 
 # variables
 total_speed = 0
-speed = 5
+speed = 10
 score = 0
 missed = 0
 
@@ -98,10 +102,10 @@ while start:
         missed += 1
         if missed >= 3:
             # show game over
-            textScore = font.render(f"GAME OVER", True, (255, 50, 50))
+            textScore = font.render(f"GAME OVER", True, FONT_COLOR)
             window.blit(textScore, (500, 500))
 
-            textScore = font.render(f"Your Score: {score}", True, (255, 50, 50))
+            textScore = font.render(f"Your Score: {score}", True, FONT_COLOR)
             window.blit(textScore, (500, 550))
 
             pygame.display.update()
@@ -131,14 +135,14 @@ while start:
     window.blit(imgBallon, rectBallon)
 
     font = pygame.font.Font("text.ttf", 50)
-    textScore = font.render(f"Score :{score}", True, (255, 50, 50))
-    window.blit(textScore, (35, 0))
+    textScore = font.render(f"Score :{score}", True, FONT_COLOR)
+    window.blit(textScore, (FONT_LEFT_MARGIN, 0))
 
-    textScore = font.render(f"Speed :{total_speed}", True, (255, 50, 50))
-    window.blit(textScore, (35, 50))
+    textScore = font.render(f"Speed :{total_speed}", True, FONT_COLOR)
+    window.blit(textScore, (FONT_LEFT_MARGIN, 50))
 
-    textScore = font.render(f"Missed :{missed}", True, (255, 50, 50))
-    window.blit(textScore, (35, 100))
+    textScore = font.render(f"Missed :{missed}", True, FONT_COLOR)
+    window.blit(textScore, (FONT_LEFT_MARGIN, 100))
 
     # Update Display/Window
     pygame.display.update()

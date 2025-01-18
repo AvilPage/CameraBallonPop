@@ -1,5 +1,6 @@
 # import
 import os
+import time
 
 import pygame
 import cv2
@@ -95,9 +96,17 @@ while start:
     # We are adding this becuase as soon as ballon reach to the top of window it should be reset
     if rectBallon.y < 0:
         missed += 1
-        if missed >= 5:
+        if missed >= 3:
             # show game over
-            window.fill((255, 255, 255))
+            textScore = font.render(f"GAME OVER", True, (255, 50, 50))
+            window.blit(textScore, (500, 500))
+
+            textScore = font.render(f"Your Score: {score}", True, (255, 50, 50))
+            window.blit(textScore, (500, 550))
+
+            pygame.display.update()
+
+            time.sleep(5)
             start = False
             print("Game Over")
 

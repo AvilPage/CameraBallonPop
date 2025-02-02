@@ -1,6 +1,7 @@
 # import
 import os
 import time
+import datetime as dt
 
 import pygame
 import cv2
@@ -29,9 +30,6 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 1280)  # height
 cap.set(4, 720)  # width
 
-# Images
-# imgBallon = pygame.image.load("BalloonRed.png").convert_alpha()
-# rectBallon = imgBallon.get_rect()
 
 def get_target_image():
     targets = os.listdir('targets')
@@ -57,16 +55,14 @@ detector = HandDetector(detectionCon=0.3, maxHands=2)
 
 def resetBallon(audio=None):
     global target_image_name, rectBallon, imgBallon
-    print(target_image_name)
 
     splash = pygame.image.load("splash.png").convert_alpha()
     window.blit(imgBallon, splash.get_rect())
 
     # play sound
-    if not audio:
-        audio = "blast.mp3"
-    pygame.mixer.music.load(audio)
-    pygame.mixer.music.play()
+    if audio:
+        pygame.mixer.music.load(audio)
+        pygame.mixer.music.play()
 
     target_image_name, imgBallon, rectBallon = get_target_image()
 
@@ -76,6 +72,12 @@ def resetBallon(audio=None):
 
 # main loop
 start = True
+start_timer = 10
+
+is_timer_running = True
+now = dt.datetime.now()
+stop_time = now + dt.timedelta(seconds=start_timer)
+
 while start:
     # Get Events
     for event in pygame.event.get():
@@ -83,22 +85,30 @@ while start:
             start = False
             pygame.quit()
 
-    # apply logic
-
     # openCV
     success, img = cap.read()
 
     # flip video
     img = cv2.flip(img, 1)
-
-    hands, img = detector.findHands(img, flipType=True)
+    hands, img = detector.findHands(img, flipType=False)
     img = cv2.flip(img, 1)
+
+    # show timer
+    if is_timer_running:
+        start_timer = int((stop_time - dt.datetime.now()).seconds) + 1
+        font = pygame.font.Font("text.ttf", 50)
+        textScore = font.render(f"Game Starting in {start_timer} seconds", True, FONT_COLOR)
+        window.blit(textScore, (300, 300))
+        pygame.display.update()
+        clock.tick(fps)
+        # time.sleep(0.1)
+        is_timer_running = dt.datetime.now() < stop_time
 
     total_speed = speed + score // 3
     rectBallon.y -= total_speed  # move the ballon up r
 
-    # We are adding this becuase as soon as ballon reach to the top of window it should be reset
-    if rectBallon.y < 0:
+    # We are adding this because as soon as ballon reach to the top of window it should be reset
+    if not is_timer_running and rectBallon.y < 0:
         missed += 1
         if missed >= 3:
             # show game over
@@ -123,14 +133,15 @@ while start:
             y = hand['lmList'][8][1]
 
             if rectBallon.collidepoint(x, y):
-                resetBallon()
+                resetBallon(audio='blast.mp3')
                 score += 1
                 break
 
-    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # we did this because CV use BRG convention and pygame use RGB so we converted
+    # we did this because CV use BRG convention and pygame use RGB so we converted
+    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     imgRGB = np.rot90(imgRGB)
     frame = pygame.surfarray.make_surface(imgRGB).convert()
-    # frame = pygame.transform.flip(frame,True,False)
+
     window.blit(frame, (0, 0))
     window.blit(imgBallon, rectBallon)
 

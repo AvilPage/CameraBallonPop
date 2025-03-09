@@ -1,0 +1,11 @@
+[project]
+name = "BallonPop"
+version = "0.1.0"
+
+requires-python = ">=3.11"
+
+dependencies = [
+    "cvzone>=1.6.1",
+    "mediapipe>=0.10.21",
+    "pygame>=2.6.1",
+]

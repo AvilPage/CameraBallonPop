@@ -93,7 +93,7 @@ while start:
     hands, img = detector.findHands(img, flipType=False)
     img = cv2.flip(img, 1)
 
-    # show timer
+    # show game timer for starting the game
     if is_timer_running:
         start_timer = int((stop_time - dt.datetime.now()).seconds) + 1
         font = pygame.font.Font("text.ttf", 50)

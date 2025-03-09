@@ -5,7 +5,7 @@ import pygame
 import cv2
 from cvzone.HandTrackingModule import HandDetector
 
-height, width = 720, 1280
+height, width = 480, 640
 
 capture = cv2.VideoCapture(0)
 capture.set(3, height)
@@ -17,8 +17,8 @@ def get_image_info():
     image_rect = image.get_rect()
 
     # here we are declaring position of ballon (W, H)
-    image_rect.x = random.randint(0, 1000)
-    image_rect.y = 500
+    image_rect.x = random.randint(0, width)
+    image_rect.y = height
 
     return image_name, image, image_rect
 
